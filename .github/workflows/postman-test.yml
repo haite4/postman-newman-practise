@@ -21,10 +21,10 @@ jobs:
       run: mkdir -p testResults
     - name: Run Test
       run: |
-        newman run petstore.collection.json -r cli,htmlextra --reporter-htmlextra-export testArtifacts/htmlreport.html
+        newman run Demo-My.postman_collection.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
 
     - name: Output the run Details
       uses: actions/upload-artifact@v4
       with:
         name: RunReports
-        path: testArtifacts
+        path: testResults
