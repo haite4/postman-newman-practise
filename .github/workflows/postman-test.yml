@@ -15,10 +15,10 @@ jobs:
       uses: actions/setup-node@v4
     - name: Install newman
       run: "npm install -g newman \nnpm install -g newman-reporter-htmlextra\n"
-    - name: Make Directory for results
-      run: mkdir -p results
+      # - name: Make Directory for results
     - name: Run Test
-      run: newman run ./petstore.collection.json -r htmlextra --reporter-htmlextra-export ./results/htmlreport.html --reporter-htmlextra-darkTheme  > ./results/runreport1.html
+      # run: mkdir -p results
+      run: newman run ./petstore.collection.json -r htmlextra --reporter-htmlextra-export ./results/htmlreport.html
     - name: Output the run Details
       uses: actions/upload-artifact@v4
       with:
