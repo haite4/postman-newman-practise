@@ -18,7 +18,7 @@ jobs:
       # - name: Make Directory for results
     - name: Run Test
       # run: mkdir -p results
-      run: newman run ./petstore.collection.json -r htmlextra --reporter-htmlextra-export ./results/htmlreport.html
+      run: newman run ./petstore.collection.json -r htmlextra --reporter-htmlextra-export results/htmlreport.html
     - name: Output the run Details
       uses: actions/upload-artifact@v4
       with:
