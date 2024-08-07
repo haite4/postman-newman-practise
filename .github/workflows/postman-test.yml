@@ -30,9 +30,9 @@ jobs:
         newman run petstore.collection.json \
         -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html \
         --reporter-htmlextra-darkTheme > testResults/runreport1.html
-      # continue-on-error: true
-    - name: Output the run Details
+      continue-on-error: true
 
+    - name: Output the run Details
       uses: actions/upload-artifact@v4
       with:
         name: RunReports
