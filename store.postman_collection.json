@@ -1,0 +1,1046 @@
+{
+	"info": {
+		"_postman_id": "70f16396-2e52-4139-a1dc-b0de0fea75dc",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30127701"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"number\" \r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"number\" \r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"number\" \r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is 201\", () => {\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response contain valid JSON data\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema)\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set(\"productName\", response.name)\r",
+									"pm.collectionVariables.set(\"productPrice\", response.price)\r",
+									"pm.collectionVariables.set(\"productDescription\", response.description)\r",
+									"pm.collectionVariables.set(\"productSku\", response.sku)\r",
+									"pm.collectionVariables.set(\"productId\", response.id)\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateLimitedLoremText(length) {\r",
+									"    let randomString = \"\";\r",
+									"    \r",
+									"    while (randomString.length < length) {\r",
+									"        randomString += pm.variables.replaceIn(\"{{$randomLoremText}}\");\r",
+									"    }\r",
+									"    return randomString.slice(0, length);\r",
+									"}\r",
+									"\r",
+									"const STRING_LEN = 50;\r",
+									"const limitedLoremText = generateLimitedLoremText(STRING_LEN);\r",
+									"\r",
+									"pm.collectionVariables.set('randomLoremText', limitedLoremText);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{$randomProductName}}\",\r\n    \"price\": {{$randomPrice}},\r\n    \"sku\": {{$randomInt}},\r\n    \"description\": \"{{randomLoremText}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"const productId = pm.collectionVariables.get(\"productId\")\r",
+									"const productName = pm.collectionVariables.get(\"productName\")\r",
+									"const response = pm.response.json()\r",
+									"pm.test(\"Check product details\", () => {\r",
+									"    pm.expect(response.id).to.be.equal(Number(productId))\r",
+									"    pm.expect(response.name).to.be.equal(productName)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response should return a single product object\", () => {\r",
+									"    pm.expect(response).to.be.an(\"object\")\r",
+									"})\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:productId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "{{productId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", () =>  {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"const randomProductName = pm.collectionVariables.get(\"randomProductName\")\r",
+									"const randomProductSku  = pm.collectionVariables.get(\"randomProductSku\")\r",
+									"const productId = pm.collectionVariables.get(\"productId\")\r",
+									"\r",
+									"pm.test(\"Verify updated order details match expected values\", () => {\r",
+									"    pm.expect(response.name).to.be.equal(randomProductName)\r",
+									"    pm.expect(response.sku).to.be.equal(randomProductSku)\r",
+									"    pm.expect(response.id).to.be.equal(Number(productId))\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomProductName = pm.collectionVariables.replaceIn(\"{{$randomProductName}}\")\r",
+									"const randomPrice = pm.collectionVariables.replaceIn(\"{{$randomPrice}}\")\r",
+									"const randomInt = pm.collectionVariables.replaceIn(\"{{$randomInt}}\")\r",
+									"pm.collectionVariables.set(\"randomProductName\", randomProductName)\r",
+									"pm.collectionVariables.set(\"randomProductSku\", Number(randomInt))\r",
+									"pm.collectionVariables.set(\"randomProductPrice\", randomPrice)\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{productId}},\r\n    \"name\": \"{{randomProductName}}\",\r\n    \"price\": {{randomProductPrice}},\r\n    \"sku\": {{randomProductSku}},\r\n    \"description\": \"{{randomLoremText}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:productId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "{{productId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"pm.test(\"Order name should include the order ID\", () => {\r",
+									"    pm.expect(response.name).to.be.include(response.id)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const requestOptions = {\r",
+									"    url: `${pm.collectionVariables.get(\"baseUrl\")}/orders`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(requestOptions, function (err, res) {\r",
+									"    if (err) {\r",
+									"        console.error(\"Request failed:\", err);\r",
+									"    } else {\r",
+									"        try {\r",
+									"            const response = res.json();\r",
+									"            const lastArrayEl = response.length - 1\r",
+									"            const orderId = response[lastArrayEl].id + 1\r",
+									"            if (response.length > 0) {\r",
+									"                pm.collectionVariables.set(\"orderId\", orderId);\r",
+									"            } else {\r",
+									"                console.error(\"Response does not contain expected data:\", response);\r",
+									"            }\r",
+									"        } catch (e) {\r",
+									"            console.error(\"Error parsing response:\", e);\r",
+									"        }\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"order_{{orderId}}\",\r\n    \"sku\": {{$randomInt}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"pm.test(\"Order list should not be empty\", () => {\r",
+									"    pm.expect(response.length).to.be.greaterThan(0);    \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json()\r",
+									"pm.test(\"Response should return a single order object\", () => {\r",
+									"    pm.expect(response).to.be.an(\"object\")\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", () =>  {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"const response = pm.response.json();\r",
+									"const randomOrderName = pm.collectionVariables.get(\"randomOrderName\")\r",
+									"const randomOrderSku  = pm.collectionVariables.get(\"randomOrderSku\")\r",
+									"const orderId = pm.collectionVariables.get(\"orderId\")\r",
+									"\r",
+									"pm.test(\"Verify updated order details match expected values\", () => {\r",
+									"    pm.expect(response.name).to.be.equal(randomOrderName)\r",
+									"    pm.expect(response.sku).to.be.equal(randomOrderSku)\r",
+									"    pm.expect(response.id).to.be.equal(orderId)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomWord = pm.collectionVariables.replaceIn(\"{{$randomWord}}\")\r",
+									"const randomInt = pm.collectionVariables.replaceIn(\"{{$randomInt}}\")\r",
+									"pm.collectionVariables.set(\"randomOrderName\", randomWord)\r",
+									"pm.collectionVariables.set(\"randomOrderSku\", Number(randomInt))\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{orderId}},\r\n    \"name\": \"{{randomOrderName}}\",\r\n    \"sku\": {{randomOrderSku}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function getRandomInt(min, max) {\r",
+									"    return Math.floor(Math.random() * (max - min + 1)) + min;\r",
+									"}\r",
+									"\r",
+									"function getRandomDate(startYear, endYear) {\r",
+									"    const year = getRandomInt(startYear, endYear);\r",
+									"    const month = getRandomInt(1, 12);\r",
+									"    const daysInMonth = new Date(year, month, 0).getDate();\r",
+									"    const day = getRandomInt(1, daysInMonth);\r",
+									"    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;\r",
+									"}\r",
+									"\r",
+									"const randomDate = getRandomDate(1900, new Date().getFullYear());\r",
+									"const signUpDate = getRandomDate(2000, new Date().getFullYear())\r",
+									"const randomDateUpdate =  getRandomDate(1990, new Date().getFullYear())\r",
+									"const randomSignUpDateUpdate =  getRandomDate(2003, new Date().getFullYear())\r",
+									"pm.collectionVariables.set(\"randomDateOfBirth\", randomDate);\r",
+									"pm.collectionVariables.set(\"randomSignUpDate\", signUpDate)\r",
+									"pm.collectionVariables.set(\"randomUserDateOfBirthUpdate\", randomDateUpdate)\r",
+									"pm.collectionVariables.set(\"randomUserSignUpUpdate\", randomSignUpDateUpdate)\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less that 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.collectionVariables.set(\"userId\", pm.response.json().id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"dateOfBirth\": \"{{randomDateOfBirth}}\",\r\n    \"emailVerified\": {{$randomBoolean}},\r\n    \"signUpDate\": \"{{randomSignUpDate}}\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Code status is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify that the user list contains more than one item\", () => {\r",
+									"    pm.expect(response.length).to.be.greaterThan(1);    \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Code status is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomFirstName = pm.collectionVariables.replaceIn(\"{{$randomFirstName}}\")\r",
+									"const randomLastName = pm.collectionVariables.replaceIn(\"{{$randomLastName}}\")\r",
+									"const randomEmail = pm.collectionVariables.replaceIn(\"{{$randomEmail}}\")\r",
+									"const randomBoolean = pm.collectionVariables.replaceIn(\"{{$randomBoolean}}\")\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set(\"randomUserFirstName\", randomFirstName)\r",
+									"pm.collectionVariables.set(\"randomUserLastName\", randomLastName)\r",
+									"pm.collectionVariables.set(\"randomUserEmail\", randomEmail)\r",
+									"pm.collectionVariables.set(\"randomUserBoolean\", Boolean(randomBoolean))\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"const randomUserFirstName =  pm.collectionVariables.get(\"randomUserFirstName\")\r",
+									"const randomUserLastName = pm.collectionVariables.get(\"randomUserLastName\")\r",
+									"const randomUserEmail = pm.collectionVariables.get(\"randomUserEmail\")\r",
+									"const randomUserBoolean = pm.collectionVariables.get(\"randomUserBoolean\")\r",
+									"const userId = pm.collectionVariables.get(\"userId\")\r",
+									"const randomUserBirthDate = pm.collectionVariables.get(\"randomUserDateOfBirthUpdate\")\r",
+									"const randomUserSignUpDate = pm.collectionVariables.get(\"randomUserSignUpUpdate\")\r",
+									"\r",
+									"pm.test(\"Verify updated user details match expected values\", () => {\r",
+									"    pm.expect(response.firstName).to.be.equal(randomUserFirstName)\r",
+									"    pm.expect(response.lastName).to.be.equal(randomUserLastName)\r",
+									"    pm.expect(response.email).to.be.equal(randomUserEmail)\r",
+									"    pm.expect(response.emailVerified).to.be.equal(randomUserBoolean)\r",
+									"    pm.expect(response.dateOfBirth).to.be.equal(randomUserBirthDate)\r",
+									"    pm.expect(response.signUpDate).to.be.equal(randomUserSignUpDate)\r",
+									"    pm.expect(response.id).to.be.equal(userId)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{randomUserFirstName}}\",\r\n    \"lastName\": \"{{randomUserLastName}}\",\r\n    \"email\": \"{{randomUserEmail}}\",\r\n    \"dateOfBirth\": \"{{randomUserDateOfBirthUpdate}}\",\r\n    \"emailVerified\": {{randomUserBoolean}},\r\n    \"signUpDate\": \"{{randomUserSignUpUpdate}}\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": {{userId}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time less than 100ms\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "productName",
+			"value": ""
+		},
+		{
+			"key": "productPrice",
+			"value": ""
+		},
+		{
+			"key": "productDescription",
+			"value": ""
+		},
+		{
+			"key": "productSku",
+			"value": ""
+		},
+		{
+			"key": "productId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "randomLoremText",
+			"value": ""
+		},
+		{
+			"key": "orderName ",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "randomOrderName",
+			"value": ""
+		},
+		{
+			"key": "randomOrderSku",
+			"value": ""
+		},
+		{
+			"key": "randomProductName",
+			"value": ""
+		},
+		{
+			"key": "randomProductSku",
+			"value": ""
+		},
+		{
+			"key": "randomProductPrice",
+			"value": ""
+		},
+		{
+			"key": "randomDateOfBirth",
+			"value": ""
+		},
+		{
+			"key": "randomSignUpDate",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "randomUserFirstName",
+			"value": ""
+		},
+		{
+			"key": "randomUserLastName",
+			"value": ""
+		},
+		{
+			"key": "randomUserEmail",
+			"value": ""
+		},
+		{
+			"key": "randomUserBoolean",
+			"value": ""
+		},
+		{
+			"key": "randomUserDateOfBirthUpdate",
+			"value": ""
+		},
+		{
+			"key": "randomUserSignUpUpdate",
+			"value": ""
+		}
+	]
+}
