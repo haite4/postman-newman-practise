@@ -19,7 +19,7 @@ jobs:
       run: mkdir -p testResults
     - name: Run Test
       run: "newman run petstore.collection.json \n-r htmlextra --reporter-htmlextra-export testResults/htmlreport.html \n--reporter-htmlextra-darkTheme  > testResults/runreport1.html\n"
-      if: always()
+      continue-on-error: true
     - name: Output the run Details
       uses: actions/upload-artifact@v4
       with:
