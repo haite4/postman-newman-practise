@@ -24,22 +24,19 @@ jobs:
         run: mkdir -p docs
 
       - name: Step 3 Execute collection
-        run: newman run petstore.collection.json --reporter-htmlextra-export ./docs/index.html
+        run: newman run petstore.collection.json --reporter-htmlextra-export docs/index.html
 
-      - name: List files in docs
-        if: ${{ always() }}
-        run: ls -la ./docs
-
+    
       - name: Step 4 Archive Production artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: report
-          path: ./docs/index.html
+          path: docs/index.html
 
       - name: Step 5 Deploy to GitHub Pages
         if: ${{ always() }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: docs
