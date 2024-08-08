@@ -37,6 +37,7 @@ jobs:
 
       - name: List files in result directory
         run: ls -la result
+        if: ${{ always() }}
 
       # Runs a set of commands using the runners shell
       - name: Step 4 Archive Production artifacts
