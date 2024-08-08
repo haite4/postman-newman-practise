@@ -20,7 +20,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Runs a single command using the runners shell
       - name: Step 1 Check version Newman and Node
@@ -33,19 +33,19 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Step 3 Execute collection
-        run: newman run ./petstore.collection.json  --reporter-htmlextra-export ./docs/index.html
+        run: newman run ./petstore.collection.json  --reporter-htmlextra-export  index.html
 
       # Runs a set of commands using the runners shell
       - name: Step 4 Archive Production artifacts
         if: ${{ always() }} # This ensures the step runs even if the previous steps fail
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: report
-          path: ./docs/index.html
+          path: index.html
 
       - name: Step 5 Deploy do Report.html
         if: ${{ always() }}
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./public
