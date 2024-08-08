@@ -10,43 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Install Node on the runner
       - name: Install Node
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
 
-      # Install the newman command line utility and also install the html extra reporter
       - name: Install newman
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
 
-      # Make directory to upload the test results
       - name: Make Directory for results
         run: mkdir -p testResults
 
-      # Run the POSTMAN collection
       - name: Run POSTMAN collection
         run: |
           newman run petstore.collection.json \
           -r htmlextra --reporter-htmlextra-export testResults/index.html \
           --reporter-htmlextra-darkTheme > testResults/runreport1.html
         continue-on-error: true
-      # List the files in testResults to verify the files were created
+
+
       - name: List files in testResults directory
         run: ls -la testResults
         if: always()
 
-      # Upload the contents of Test Results directory to workspace
       - name: Output the run Details
         uses: actions/upload-artifact@v4
         with:
           name: RunReports
-          path: testResults/htmlreport.html
+          path: testResults
 
       - name: Step 5 Deploy do Report.html
         if: ${{ always() }}
