@@ -39,10 +39,7 @@ jobs:
       - name: Step 4 Archive Production artifacts
         if: ${{ always() }} # This ensures the step runs even if the previous steps fail
         uses: actions/upload-artifact@v4
-        with:
-          name: report
-          path: index.html
-
+       
       - name: Step 5 Deploy do Report.html
         if: ${{ always() }}
         uses: peaceiris/actions-gh-pages@v4
