@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: RunReports
-          path: testResults/htmlreport.html
+          path: testResults
 
       - name: Step 5 Deploy do Report.html
         if: ${{ always() }}
