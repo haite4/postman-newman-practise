@@ -33,7 +33,7 @@ jobs:
       - name: Run POSTMAN collection
         run: |
           newman run petstore.collection.json \
-          -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html \
+          -r htmlextra --reporter-htmlextra-export testResults/index.html \
           --reporter-htmlextra-darkTheme > testResults/runreport1.html
         continue-on-error: true
       # List the files in testResults to verify the files were created
