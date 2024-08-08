@@ -27,6 +27,7 @@ jobs:
         run: newman run petstore.collection.json --reporter-htmlextra-export ./docs/index.html
 
       - name: List files in docs
+        if: ${{ always() }}
         run: ls -la ./docs
 
       - name: Step 4 Archive Production artifacts
