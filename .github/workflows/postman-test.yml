@@ -39,6 +39,7 @@ jobs:
       # List the files in testResults to verify the files were created
       - name: List files in testResults directory
         run: ls -la testResults
+        if: always()
 
       # Upload the contents of Test Results directory to workspace
       - name: Output the run Details
