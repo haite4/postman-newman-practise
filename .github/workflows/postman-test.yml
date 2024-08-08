@@ -23,7 +23,7 @@ jobs:
 
       - name: Run tests
         run: |
-          newman run "LearingRESTFULService.json" -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html || true
+          newman run "petstore.collection.json" -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html || true
 
       - name: Output the results
         uses: actions/upload-artifact@v3
