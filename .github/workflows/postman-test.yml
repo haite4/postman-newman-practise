@@ -38,7 +38,7 @@ jobs:
         git config --local user.name "{{ secrets.USER_NAME }}"
         git add testResults/htmlreport.html
         git commit -m "Add generated htmlreport"
-        git push 
+        git push origin HEAD:gh_pages
 
     - name: Output the run Details
       uses: actions/upload-artifact@v4
