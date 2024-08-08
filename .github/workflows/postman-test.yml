@@ -31,6 +31,7 @@ jobs:
 
       # Run the POSTMAN collection
       - name: Run POSTMAN collection
+        if: always()
         run: |
           newman run petstore.collection.json \
           -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html \
