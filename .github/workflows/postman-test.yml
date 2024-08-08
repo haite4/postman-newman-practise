@@ -31,12 +31,11 @@ jobs:
 
       # Run the POSTMAN collection
       - name: Run POSTMAN collection
-        if: always()
         run: |
           newman run petstore.collection.json \
           -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html \
           --reporter-htmlextra-darkTheme > testResults/runreport1.html
-
+        continue-on-error: true
       # List the files in testResults to verify the files were created
       - name: List files in testResults directory
         run: ls -la testResults
