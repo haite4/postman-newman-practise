@@ -33,7 +33,8 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Step 3 Execute collection
-        run: newman run ./petstore.collection.json  
+        run: | 
+          newman run ./petstore.collection.json  
           --reporter-htmlextra-export  ./result/index.html
 
       - name: List files in result directory
