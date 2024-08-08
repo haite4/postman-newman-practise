@@ -6,13 +6,13 @@ jobs:
   automated-test-api:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create dir
         run: |
           mkdir -p testResults
 
       - name: Install Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16.x'
         
@@ -26,7 +26,7 @@ jobs:
           newman run "petstore.collection.json" -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html || true
 
       - name: Output the results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Reporter
           path: testResults
@@ -41,7 +41,7 @@ jobs:
 
       - name: Publish Github Pages
         if: ${{ always() }}
-        uses: peaceiris/actions-gh-pages@v3.8.0
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
