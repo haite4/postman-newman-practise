@@ -36,7 +36,7 @@ jobs:
       run: |
         git config --local user.email "{{ secrets.USER_EMAIL }}"
         git config --local user.name "{{ secrets.USER_NAME }}"
-        git testResults/htmlreport.html
+        git add testResults/htmlreport.html
         git commit -m "Add generated htmlreport"
         git push 
 
