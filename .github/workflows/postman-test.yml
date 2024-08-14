@@ -26,12 +26,10 @@ jobs:
         run: mkdir -p testResults
 
       - name: Run POSTMAN collection
-        run: newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export testResults/index.html --reporter-htmlextra-darkTheme > testResults/runreport1.html
-
-        # run: |
-        #   newman run petstore.collection.json \
-        #   -r htmlextra --reporter-htmlextra-export testResults/index.html \
-        #   --reporter-htmlextra-darkTheme > testResults/runreport1.html
+        run: |
+          newman run petstore.collection.json \
+          -r htmlextra --reporter-htmlextra-export testResults/index.html \
+          --reporter-htmlextra-darkTheme > testResults/runreport1.html
         continue-on-error: true
         
       - name: Output the run Details
