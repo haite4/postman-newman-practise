@@ -1,18 +1,38 @@
-# Postman + newman + github actions (Simple store template)
+# Postman + newman + github actions 
 
-<a href="https://drive.google.com/file/d/1LQ1uG7Tt70Jubuk5loS4dMSk-1AJ5jzz/view?usp=sharing" /> Intro </a>
+## Introduction
+This project focuses on testing a local server API using Postman and Newman. It is integrated with GitHub Actions to automate the execution of API tests, and the test results are published to GitHub Pages.
 
-## Task steps / First task
-1. Read: 
-- <a href="https://svitla.com/blog/testing-rest-api-with-postman-and-curl"> Postman & Curl & REST article </a> 
-- <a href="https://learning.postman.com/docs/writing-scripts/script-references/test-examples/">Postman tests examples (off doc)</a>
-- <a href="https://drive.google.com/file/d/1ftlfK91TXTS9GH7ufEXsGujop_LpC5ef/view?usp=sharing" /> Manual schema generation </a>
-2. Download this repo.
-3. Run `npm i` (install node.js dependencies)
-4. Run `npm run tern-on-api`(to run testing server locally )
+## Steps to Install
+1. Install Nodejs:
 
-### Overview of local server testing
-Routes `/products`, `/orders` and `/users`. Below is a table of supported operations with `products` as example resource. The same operations are also supports for `orders/` and `users/`.
+    [Nodejs](https://nodejs.org/en/download/package-manager)
+
+2. Clone the repository:
+    ```sh
+    git clone https://github.com/haite4/postman-newman-task
+    ```
+3. Navigate to the project directory:
+    ```sh 
+    cd postman-newman-task
+    ```
+
+4. Install dependencies:
+    ```sh
+    npm install 
+    ``` 
+
+## Steps to Launch
+
+1. **Run the local server**:
+    ```sh
+    npm run tern-on-api
+    ```
+   
+   
+## Overview of API Endpoints
+
+This section provides an overview of the available API endpoints for interacting with the local server. The server supports routes for managing `products`, `orders`, and `users`. The table below details the operations for the `products` resource, which are similarly available for `orders` and `users`.
 
 | VERB     |Route          | Input      | Output             |
 |----------|---------------|------------|--------------------|
@@ -22,33 +42,57 @@ Routes `/products`, `/orders` and `/users`. Below is a table of supported operat
 | PUT      | /products     | **object** | **Updated object** |
 | DELETE   | /products/:id | **e.g 3**  | **Deleted object** |
 
+## Testing with Postman
 
-5. Upload `store.collection.json` in Postman app. (skip this exhibit in case you decide to use another public API ) 
-6. Make some integration tests in Postman, could be status code/JSON check and so on. ( in case with another API - write tests based on another one).
+1. **Open Postman**: Launch the Postman application on your computer.
 
-Examples:
-- Test pagination, by way like `http://localhost:3000/users?page=1&pageSize=2`. 
-- Test sorting, by way like `http://localhost:3000/users?sortOrder=ASC&sortKey=firstName`. You can sort an any resource response using query parameters sortOrder and sortKey.
--  Test status code for REST API (200,400 and so on).
--  Test response time.
--  Test response thanks to json schema validation.
--  Try to follow `AAA` approach (arrange, act, assert).
+2. **Import Collection**: Import the `store.collection.json` file into Postman. This file contains the API requests and tests.
 
-7. Save new collection with your new integration tests with the same name as `store.collection.json`. ( in case with another API - another file name for json file)
-8. Push to you github repo in main branch ( in case with local server - save local server as well )
+3. **Run Tests**:
+   - **Single Test**: To run a specific test, select the request from the collection and click "Send" to execute it.
+   - **All Tests**: 
+     - Right-click on the collection name in the sidebar.
+     - Select "Run Collection" from the context menu.
+     - The Collection Runner will open. In the Runner, click the "Run <collection name>" button to start executing all tests. 
 
-###  GH actions practice / Second Task
-9. Add Github action to run `petstore.collection.json` in Github pages by <a href="https://www.linkedin.com/pulse/running-postman-collections-via-github-action-nirmala-jayasanka"> article </a> or use another GH action.
-10. Check github actions for result.
+## Running Tests Locally with Newman
+
+Newman is a command-line utility that enables you to run Postman collections directly from your terminal. Follow these steps to execute your tests locally and view the results:
+
+1. **Install Newman**:
+   - To add Newman as a local development tool, run the following command:
+     ```sh
+     npm install newman --save-dev
+     ```
+
+2. **Execute the Tests and Create a Report**:
+   - Run your Postman collection and generate a test report by executing:
+     ```sh
+     npm run test:api
+     ```
+
+3. **View the Report**:
+   - **For macOS Users**: Open the report file in your default web browser by using:
+     ```sh
+     open  testResults/index.html
+     ```
+   - **For Windows Users**: Launch the report file in your default web browser with:
+     ```sh
+     start testResults/index.html
+     ```
+
+    - **For Linux Users**: Open the report file in your default web browser with:
+     ```sh
+        xdg-open testResults/index.html
+     ```
 
 
-You can use another API to perform  your testing instead of local store API and `store.collection.json`. 
-- <a href="https://github.com/public-apis/public-apis"> Public API list </a>
+## GitHub Actions Integration
 
-### Usefull links (skip this)
-Examples with different actions in Postman workspace (only take a look once, no need to learn this) 
-- <a href="https://www.postman.com/postman/workspace/postman-answers"> Postman answers </a>
-- <a href="https://restfulapi.net"> REST API Tutorial </a>
+We have set up a GitHub Actions workflow to automatically run the `petstore.collection.json` Postman collection. The workflow executes the API tests and publishes the results to GitHub Pages. You can review the test results at the following link:
 
-Doc for json schema validation, to check output API response (only take a look once, no need to learn this doc) 
-- <a href="https://json-schema.org"> json schema docs </a>
+[View Test Results](https://haite4.github.io/postman-newman-task/)
+
+### Summary
+- **GitHub Actions Workflow**: The workflow is configured to run the Postman collection and generate test reports.
+- **Result Publication**: Test results are automatically published to GitHub Pages, providing a convenient way to access and review the results online.
