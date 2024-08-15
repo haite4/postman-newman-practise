@@ -17,6 +17,46 @@ products:
     price: 30
     sku: 999921312423312
     description: awesome
+  - name: Generic Fresh Hat
+    price: 189.63
+    sku: 281
+    description: eosQui maxime est labore deleniti libero praesenti
+    id: 4
+  - name: Licensed Fresh Shoes
+    price: 464.25
+    sku: 598
+    description: Quibusdam et vel nihil necessitatibus.Et et sed.Au
+    id: 5
+  - name: Awesome Plastic Shirt
+    price: 666.23
+    sku: 382
+    description: porrooptioIn qui accusamus voluptatem et dolor nos
+    id: 6
+  - name: Handmade Soft Cheese
+    price: 52.88
+    sku: 687
+    description: Voluptatem facere cum dolores. Dignissimos saepe s
+    id: 7
+  - name: Fantastic Concrete Chicken
+    price: 646.98
+    sku: 989
+    description: Quia tenetur itaque illum exercitationem cumque mo
+    id: 8
+  - name: Licensed Concrete Fish
+    price: 126.7
+    sku: 81
+    description: Perspiciatis soluta quo laudantium sit.Aut nostrum
+    id: 9
+  - name: Incredible Concrete Chips
+    price: 63
+    sku: 598
+    description: Inventore corrupti deserunt impedit odio. Ipsa fug
+    id: 10
+  - name: Ergonomic Concrete Shoes
+    price: 456.05
+    sku: 712
+    description: Maiores vero voluptas est voluptas voluptate est s
+    id: 11
 orders:
   - id: 1
     name: order1
@@ -27,12 +67,6 @@ orders:
   - id: 3
     name: order2
     sku: 999921312423312
-  - name: order_4
-    sku: 485
-    id: 4
-  - name: order_5
-    sku: 163
-    id: 5
 users:
   - id: 1
     firstName: Alice
