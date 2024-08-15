@@ -33,7 +33,7 @@ jobs:
           name: RunReports
           path: testResults
 
-      - name: Step 5 Deploy do Report.html
+      - name: Deploy to Github Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
