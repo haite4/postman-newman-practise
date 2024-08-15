@@ -421,6 +421,9 @@
 									"\r",
 									"const productId = pm.collectionVariables.get(\"productId\")\r",
 									"const productName = pm.collectionVariables.get(\"productName\")\r",
+									"const productDescription = pm.collectionVariables.get(\"productDescription\")\r",
+									"const productPrice = pm.collectionVariables.get(\"productPrice\")\r",
+									"const productSku = pm.collectionVariables.get(\"productSku\")\r",
 									"const response = pm.response.json()\r",
 									"\r",
 									"pm.test(\"Response contain valid JSON data\", () => {\r",
@@ -438,6 +441,9 @@
 									"pm.test(\"Check product details\", () => {\r",
 									"    pm.expect(response.id).to.be.equal(Number(productId))\r",
 									"    pm.expect(response.name).to.be.equal(productName)\r",
+									"    pm.expect(response.description).to.be.equal(productDescription)\r",
+									"    pm.expect(response.price).to.be.equal(productPrice)\r",
+									"    pm.expect(response.sku).to.be.equal(productSku)\r",
 									"})\r",
 									"\r",
 									"pm.test(\"Response should return a single product object\", () => {\r",
@@ -523,6 +529,9 @@
 									"const randomProductName = pm.collectionVariables.get(\"randomProductName\")\r",
 									"const randomProductSku  = pm.collectionVariables.get(\"randomProductSku\")\r",
 									"const productId = pm.collectionVariables.get(\"productId\")\r",
+									"const randomProductPrice = pm.collectionVariables.get(\"randomProductPrice\")\r",
+									"const ramdonProductDescription = pm.collectionVariables.get(\"randomUpdatedLoremText\")\r",
+									"\r",
 									"\r",
 									"pm.test(\"Status code is 200\", () => {\r",
 									"    pm.response.to.have.status(200)\r",
@@ -536,6 +545,8 @@
 									"    pm.expect(response.name).to.be.equal(randomProductName)\r",
 									"    pm.expect(response.sku).to.be.equal(randomProductSku)\r",
 									"    pm.expect(response.id).to.be.equal(Number(productId))\r",
+									"    pm.expect(response.price).to.be.equal(Number(randomProductPrice))\r",
+									"    pm.expect(response.description).to.be.equal(ramdonProductDescription)\r",
 									"})\r",
 									"\r",
 									"pm.test(\"Response contain valid JSON data\", () => {\r",
@@ -554,6 +565,18 @@
 									"const randomPrice = pm.collectionVariables.replaceIn(\"{{$randomPrice}}\")\r",
 									"const randomInt = pm.collectionVariables.replaceIn(\"{{$randomInt}}\")\r",
 									"\r",
+									"function generateLimitedLoremText(length) {\r",
+									"    let randomString = \"\";\r",
+									"    while (randomString.length < length) {\r",
+									"        randomString += pm.variables.replaceIn(\"{{$randomLoremText}}\");\r",
+									"    }\r",
+									"    return randomString.slice(0, length);\r",
+									"}\r",
+									"\r",
+									"const STRING_LEN = 50;\r",
+									"const limitedLoremText = generateLimitedLoremText(STRING_LEN);\r",
+									"\r",
+									"pm.collectionVariables.set('randomUpdatedLoremText', limitedLoremText);\r",
 									"pm.collectionVariables.set(\"randomProductName\", randomProductName)\r",
 									"pm.collectionVariables.set(\"randomProductSku\", Number(randomInt))\r",
 									"pm.collectionVariables.set(\"randomProductPrice\", randomPrice)\r",
@@ -569,7 +592,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": {{productId}},\r\n    \"name\": \"{{randomProductName}}\",\r\n    \"price\": {{randomProductPrice}},\r\n    \"sku\": {{randomProductSku}},\r\n    \"description\": \"{{randomLoremText}}\"\r\n}",
+							"raw": "{\r\n    \"id\": {{productId}},\r\n    \"name\": \"{{randomProductName}}\",\r\n    \"price\": {{randomProductPrice}},\r\n    \"sku\": {{randomProductSku}},\r\n    \"description\": \"{{randomUpdatedLoremText}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -677,6 +700,12 @@
 									"\r",
 									"pm.test(\"Response time less than 100ms\", () => {\r",
 									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response body should be an empty object\", () => {\r",
+									"    let responseBody =  pm.response.json()\r",
+									"    pm.expect(responseBody).to.be.an(\"object\")\r",
+									"    pm.expect(Object.keys(responseBody)).to.have.lengthOf(0)\r",
 									"})"
 								],
 								"type": "text/javascript",
@@ -1094,10 +1123,6 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
 									"})\r",
 									"\r",
-									"pm.test(\"Response should return a single order object\", () => {\r",
-									"    pm.expect(response).to.be.an(\"object\")\r",
-									"})\r",
-									"\r",
 									"pm.test(\"Response contain valid JSON data\", () => {\r",
 									"    pm.response.to.have.jsonSchema(schema)\r",
 									"})\r",
@@ -1331,6 +1356,12 @@
 									"\r",
 									"pm.test(\"Response time less than 100ms\", () => {\r",
 									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response body should be an empty object\", () => {\r",
+									"    let responseBody =  pm.response.json()\r",
+									"    pm.expect(responseBody).to.be.an(\"object\")\r",
+									"    pm.expect(Object.keys(responseBody)).to.have.lengthOf(0)\r",
 									"})"
 								],
 								"type": "text/javascript",
@@ -2152,6 +2183,12 @@
 									"\r",
 									"pm.test(\"Response time less than 100ms\", () => {\r",
 									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response body should be an empty object\", () => {\r",
+									"    let responseBody =  pm.response.json()\r",
+									"    pm.expect(responseBody).to.be.an(\"object\")\r",
+									"    pm.expect(Object.keys(responseBody)).to.have.lengthOf(0)\r",
 									"})"
 								],
 								"type": "text/javascript",
@@ -2216,11 +2253,11 @@
 		},
 		{
 			"key": "productPrice",
-			"value": "456.05"
+			"value": "954.36"
 		},
 		{
 			"key": "productDescription",
-			"value": "Its very good product for good price"
+			"value": "dolorem labore fugaut possimus rerumQui nam sit.Du"
 		},
 		{
 			"key": "productSku",
@@ -2324,6 +2361,10 @@
 			"key": "userSortKey",
 			"value": "firstName",
 			"type": "string"
+		},
+		{
+			"key": "randomUpdatedLoremText",
+			"value": "sit quasi omnisnam itaque dignissimosQuia aut eaqu"
 		}
 	]
 }
